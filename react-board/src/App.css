@@ -4,11 +4,9 @@
 
 body {
     margin: 0;
-    background: #f1f5f9; 
-    font-family: 
-        -apple-system, BlinkMacSystemFont,
-        "Segoe UI", Roboto, sans-serif;
-    color: #0f172a; 
+    background: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0f172a;
 }
 
 .page {
@@ -33,6 +31,7 @@ body {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .post-card h2 {
@@ -53,19 +52,75 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.post-card {
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
 .page > p {
     text-align: center;
     font-size: 18px;
     color: #64748b;
 }
 
-@media (max-width: 768px) {
+.post-number {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #6366f1;
+}
+
+.search-area {
+    margin-bottom: 15px;
+}
+
+.search-area input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+    outline: none;
+}
+
+.search-area input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.search-count {
+    margin-bottom: 20px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: bold;
+    color: #64748b;
+}
+
+.post-card-search {
+    padding: 32px;
+    border: 2px solid #6366f1;
+    background: #ffffff;
+    transform: scale(1.02);
+}
+
+.post-card-search h2 {
+    font-size: 26px;
+    color: #312e81;
+}
+
+.post-card-search p {
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.no-result {
+    margin-top: 30px;
+    padding: 20px;
+    text-align: center;
+    background: white;
+    border-radius: 10px;
+    color: #94a3b8;
+    font-weight: bold;
+}
+
+@media (max-width: 700px) {
     .page {
         margin: 20px auto;
         padding: 20px;
@@ -75,65 +130,5 @@ body {
     }
     .post-card h2 {
         font-size: 18px;
-    }
-    .post-number {
-      display: inline-block;
-      margin-bottom: 10px;
-      font-size: 13px;
-      font-weight: bold;
-      color: #6366f1
-    }
-    .search-area {
-    margin-bottom: 15px;
-}
-
-    .search-area input {
-        width: 100%;
-        padding: 14px 16px;
-        border: 1px solid #cbd5e1;
-        border-radius: 10px;
-        font-size: 16px;
-        background: white;
-        outline: none;
-    }
-
-    .search-area input:focus {
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-    }
-
-    .search-count {
-        margin-bottom: 20px;
-        text-align: right;
-        font-size: 14px;
-        font-weight: bold;
-        color: #64748b;
-    }
-
-    .post-card-search {
-        padding: 32px;
-        border: 2px solid #6366f1;
-        background: #ffffff;
-        transform: scale(1.02);
-    }
-
-    .post-card-search h2 {
-        font-size: 26px;
-        color: #312e81;
-    }
-
-    .post-card-search p {
-        font-size: 17px;
-        line-height: 1.8;
-    }
-
-    .no-result {
-        margin-top: 30px;
-        padding: 20px;
-        text-align: center;
-        background: white;
-        border-radius: 10px;
-        color: #94a3b8;
-        font-weight: bold;
     }
 }
