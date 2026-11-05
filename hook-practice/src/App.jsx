@@ -1,183 +1,74 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState, useMemo, useCallback, useContext } from 'react'
 import './App.css'
+import Header from './Header.jsx'
+import StudentList from './StudentList.jsx'
+import { ThemeContext } from './ThemeContext.jsx'
+import studentsData from './students.json' // 👈 JSON 파일 임포트
 
 function App() {
-  const [name, setName] = useState('')
-  const [attendance, setAttendance] = useState('출석')
-  const [memo, setMemo] = useState('')
-  const [students, setStudents] = useState([])
-  const [message, setMessage] = useState('')
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const nameInputRef = useRef(null)
+  const [searchName, setSearchName] = useState('')
+  const [searchMajor, setSearchMajor] = useState('')
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000)
+  const { theme } = useContext(ThemeContext)
 
-    return () => {
-      clearInterval(timer)
+  // 👈 studentsData.students 배열을 사용하도록 수정
+  const filteredStudents = useMemo(() => {
+    return studentsData.students.filter((student) => {
+      const matchesName = student.name.includes(searchName)
+      const matchesMajor = student.major.includes(searchMajor)
+      return matchesName && matchesMajor
+    })
+  }, [searchName, searchMajor])
+
+  const averageScore = useMemo(() => {
+    if (filteredStudents.length === 0) {
+      return 0
     }
+    const total = filteredStudents.reduce((sum, student) => sum + student.score, 0)
+    return Math.round(total / filteredStudents.length)
+  }, [filteredStudents])
+
+  const clearSearch = useCallback(() => {
+    setSearchName('')
+    setSearchMajor('')
   }, [])
-
-  useEffect(() => {
-    if (nameInputRef.current) {
-      nameInputRef.current.focus()
-    }
-  }, [])
-  
-  const addStudent = () => {
-    if (name === '') {
-      setMessage('학생 이름을 입력하세요.')
-      nameInputRef.current.focus()
-      return
-    }
-    
-    const newStudent = {
-      id: Date.now(),
-      name: name,
-      attendance: attendance,
-      memo: memo
-    }
-
-    const updatedStudents = students.concat(newStudent)
-    setStudents(updatedStudents)
-    setMessage('학생이 등록되었습니다.')
-    setName('')
-    setAttendance('출석')
-    setMemo('')
-    nameInputRef.current.focus()
-  }
-
-  const deleteStudent = (id) => {
-    const updatedStudents = students.filter((student) =>
-      student.id !== id
-    )
-    setStudents(updatedStudents)
-    setMessage('학생 정보가 삭제되었습니다.')
-  }
-
-  const clearStudents = () => {
-    setStudents([])
-    setMessage('전체 학생 목록을 초기화했습니다.')
-    nameInputRef.current.focus()
-  }
-  
-  const presentStudents = students.filter((student) =>
-    student.attendance === '출석'
-  )
-  const lateStudents = students.filter((student) => 
-    student.attendance === '지각'
-  )
-  const absentStudents = students.filter((student) => 
-    student.attendance === '결석'
-  )
 
   return (
-    <main className="page">
-      <h1>학생 출석 메모 관리</h1>
-      <section className="time-box">
-        <span>현재 시간</span>
-        <strong>
-          {currentTime.toLocaleTimeString()}
-        </strong>
-      </section>
-      <section className="form-box">
-        <h2>학생 등록</h2>
-        <div className="form-group">
-          <label>학생 이름</label>
+    <main className={theme === 'light' ? 'page light' : 'page dark'}>
+      <Header />
+      <section className="search-box">
+        <label>학생 이름 검색</label>
+        <div className="search-row">
           <input 
-            ref={nameInputRef} 
-            type="text"
+            type="text" 
             placeholder="학생 이름 입력" 
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
           />
+          <button onClick={clearSearch}>검색 초기화</button>
         </div>
-
-        <div className="form-group">
-          <label>출석 상태</label>
-          <select 
-            value={attendance}
-            onChange={(e) => setAttendance(e.target.value)}
-          >
-            <option value="출석">출석</option>
-            <option value="지각">지각</option>
-            <option value="결석">결석</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>메모</label>
-          <textarea 
-            placeholder="메모 입력"
-            value={memo} 
-            onChange={(e) => setMemo(e.target.value)}
-          >
-          </textarea>
-        </div>
-        <button className="add-button" onClick={addStudent}>
-          학생 추가
-        </button>
-        {message !== '' && (
-          <p className="message">{message}</p>
-        )}
+        <p className="search-result">
+          검색 결과 {filteredStudents.length}명 / 평균점수 {averageScore}점
+        </p>
       </section>
-      <section className="summary-box">
-        <h2>출석 현황</h2>
-        <div className="summary-list">
-          <div>
-            <span>전체</span>
-            <strong>{students.length}명</strong>
-          </div>
-          <div>
-            <span>출석</span>
-            <strong>{presentStudents.length}명</strong>
-          </div>
-          <div>
-            <span>지각</span>
-            <strong>{lateStudents.length}명</strong>
-          </div>
-          <div>
-            <span>결석</span>
-            <strong>{absentStudents.length}명</strong>
-          </div>
+      
+      <section className="search-box">
+        <label>전공 검색</label>
+        <div className="search-row">
+          <input
+            type="text"
+            placeholder="전공 입력"
+            value={searchMajor}
+            onChange={(e) => setSearchMajor(e.target.value)}
+          />
+          <button onClick={clearSearch}>검색 초기화</button>
         </div>
+        <p className="search-result">
+          검색 결과 {filteredStudents.length}명 / 평균점수 {averageScore}점
+        </p>
       </section>
-      <section className="student-box">
-        <div className="student-header">
-          <h2>학생 목록</h2>
-          <button onClick={clearStudents}>
-            전체 초기화
-          </button>
-        </div>
-        {students.length === 0 && (
-          <p className="empty-message">
-            등록된 학생이 없습니다.
-          </p>
-        )}
-        
-        {/* 학생 목록 반복 출력 */}
-        {students.map((student) => (
-          <article className="student-card" key={student.id}>
-            <div>
-              <h3>{student.name}</h3>
-              <p>
-                출석 상태 : { ' ' } {student.attendance}
-              </p>
-              <p>
-                메모 : { ' ' }
-                {student.memo === '' ? '없음' : student.memo}
-              </p>
-            </div>
-            <button
-              className="delete-button"
-              onClick={() => deleteStudent(student.id)}
-            >
-              삭제
-            </button>
-          </article>
-        ))}
-      </section>
+      
+      <StudentList students={filteredStudents} />
     </main>
   )
 }
