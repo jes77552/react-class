@@ -3,7 +3,7 @@ import './App.css'
 import Header from './Header.jsx'
 import StudentList from './StudentList.jsx'
 import { ThemeContext } from './ThemeContext.jsx'
-import studentsData from './students.json' // 👈 JSON 파일 임포트
+import studentsData from './students.json' 
 
 function App() {
   const [searchName, setSearchName] = useState('')
@@ -11,13 +11,10 @@ function App() {
 
   const { theme } = useContext(ThemeContext)
 
-  // 👈 studentsData.students 배열을 사용하도록 수정
-  const filteredStudents = useMemo(() => {
-    return studentsData.students.filter((student) => {
-      const matchesName = student.name.includes(searchName)
-      const matchesMajor = student.major.includes(searchMajor)
-      return matchesName && matchesMajor
-    })
+ const filteredStudents = useMemo(() => {
+    return studentsData.students
+      .filter((student) => student.name.includes(searchName))
+      .filter((student) => student.major.includes(searchMajor))
   }, [searchName, searchMajor])
 
   const averageScore = useMemo(() => {
@@ -45,14 +42,9 @@ function App() {
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
           />
-          <button onClick={clearSearch}>검색 초기화</button>
         </div>
         <p className="search-result">
-          검색 결과 {filteredStudents.length}명 / 평균점수 {averageScore}점
         </p>
-      </section>
-      
-      <section className="search-box">
         <label>전공 검색</label>
         <div className="search-row">
           <input
